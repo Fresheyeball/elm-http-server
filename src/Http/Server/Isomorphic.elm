@@ -21,12 +21,14 @@ embed (modulename, path) html = let
         <title>""" ++ joinOn " " ++ """</title>
       </head>
       <body>
-        """ ++ toHTML html ++ """
+        <div id="elm">
+          """ ++ toHTML html ++ """
+        </div>
         <script>
           """ ++ js ++ """
           var runningElmModule =
             Elm.embed(Elm.""" ++ joinOn "." ++ """,
-            document.body);
+            document.getElementById("elm"));
         </script>
       </body>
     </html>"""

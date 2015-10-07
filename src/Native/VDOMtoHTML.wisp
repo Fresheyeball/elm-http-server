@@ -5,8 +5,6 @@
     (aget r space)))
   record))
 
-(defn- log [x] (do (.log console "x->" x) x))
-
 (defn- make
   [localRuntime] (let
   [Task (Elm.Native.Task.make localRuntime)]

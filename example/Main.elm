@@ -3,5 +3,7 @@ module Main where
 import Html exposing (..)
 
 main : Html
-main = h1 []
-  [text "Wowzers in my Trousers"]
+main = div []
+  [ h1 []
+      [ text "Wowzers in my Trousers" ]
+  , input [] []]
