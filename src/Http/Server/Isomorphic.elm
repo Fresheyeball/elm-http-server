@@ -25,17 +25,21 @@ embed (modulename, path) html = let
           a:hover { text-decoration: underline; color: rgb(234,21,122); }
           html,body { height: 100%; margin: 0px; }
         </style>
+
       </head>
       <body>
-        """ ++ html ++ """
+        <div id="elm">
+          """ ++ html ++ """
+        </div>
         <script>
           """ ++ js ++ """
           var runningElmModule =
-            Elm.fullscreen(""" ++ join "." mn ++ """);
+            Elm.embed(Elm.""" ++ join "." modulename ++ """,
+            document.getElementById("elm"));
         </script>
       </body>
     </html>"""
 
   in
 
-    readFile path `andThen` (succeed << g)
+    readFile path `andThen` (g >> succeed)

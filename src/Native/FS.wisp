@@ -8,7 +8,7 @@
 (defn- readFile
   [fs Task]
   (fn [path] (.asyncFunction Task (fn [callback]
-    (.readFile fs path (fn [err, data]
+    (.readFile fs path :utf8 (fn [err, data]
       (callback
         (if err
           (Task.fail err)

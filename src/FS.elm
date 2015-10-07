@@ -1,8 +1,9 @@
 module FS where
 
+import Task exposing (Task)
 import Native.FS
 
-type ReadErr = ReadErr
+type ReadError = ReadError
 
-readFile : String -> Task ReadErr String
+readFile : String -> Task ReadError String
 readFile = Native.FS.readFile

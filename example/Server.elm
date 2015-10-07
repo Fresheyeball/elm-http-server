@@ -2,6 +2,7 @@ module Server where
 
 import Http.Server exposing (..)
 import Http.Server.Isomorphic exposing (..)
+import FS exposing (ReadError)
 import Task exposing (..)
 import Signal exposing (..)
 import Json.Encode as Json
@@ -9,12 +10,14 @@ import Json.Encode as Json
 server : Mailbox (Request, Response)
 server = mailbox (emptyReq, emptyRes)
 
-route : (Request, Response) -> Task x ()
+route : (Request, Response) -> Task ReadError ()
 route (req, res) =
   case method req of
     GET -> case url req of
       "/"    -> writeHtml res "<h1>Wowzers</h1>"
-      "/foo" -> writeHtml res <| embed (["Main"], "main.js") "<h1>Trousers</h1>"
+      "/foo" ->
+        embed (["Main"], "example/main.js") "<h1>Trousers</h1>"
+        `andThen` writeHtml res
       _      -> writeHtml res "<h1>404</h1>"
     POST ->
       Json.object [("foo", Json.string "bar")]
@@ -24,7 +27,7 @@ route (req, res) =
       Json.string "fail"
       |> writeJson res
 
-port reply : Signal (Task x ())
+port reply : Signal (Task ReadError ())
 port reply = route <~ dropRepeats server.signal
 
 port serve : Task x Server
