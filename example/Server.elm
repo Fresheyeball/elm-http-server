@@ -16,9 +16,7 @@ route (req, res) =
   case method req of
     GET -> case url req of
       "/"    -> writeHtml res "<h1>Wowzers</h1>"
-      "/foo" ->
-        embed (["Main"], "example/main.js") Main.main
-        `andThen` writeHtml res
+      "/foo" -> writeElm res Main.elmId Main.main
       _      -> writeHtml res "<h1>404</h1>"
     POST ->
       Json.object [("foo", Json.string "bar")]
