@@ -6,10 +6,12 @@
     "source-directories": [
         "src"
     ],
-    "exposed-modules": ["Http.Server"],
+    "exposed-modules": [
+        "Http.Server"
+    ],
     "native-modules": true,
     "dependencies": {
-        "elm-lang/core": "2.1.0 <= v < 3.0.0"
+        "evancz/elm-http": "2.0.0 <= v < 3.0.0"
     },
-    "elm-version": "0.15.1 <= v < 0.16.0"
+    "elm-version": "0.15.0 <= v < 0.16.0"
 }
