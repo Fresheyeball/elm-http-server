@@ -4,4 +4,4 @@ import Html exposing (..)
 
 main : Html
 main = h1 []
-  [text "in my"]
+  [text "Wowzers in my Trousers"]

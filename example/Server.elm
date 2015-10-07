@@ -2,6 +2,7 @@ module Server where
 
 import Http.Server exposing (..)
 import Http.Server.Isomorphic exposing (..)
+import Main
 import FS exposing (ReadError)
 import Task exposing (..)
 import Signal exposing (..)
@@ -16,7 +17,7 @@ route (req, res) =
     GET -> case url req of
       "/"    -> writeHtml res "<h1>Wowzers</h1>"
       "/foo" ->
-        embed (["Main"], "example/main.js") "<h1>Trousers</h1>"
+        embed (["Main"], "example/main.js") Main.main
         `andThen` writeHtml res
       _      -> writeHtml res "<h1>404</h1>"
     POST ->

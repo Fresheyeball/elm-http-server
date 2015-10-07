@@ -1,41 +1,32 @@
 module Http.Server.Isomorphic where
 
 import String exposing (join)
+import Html exposing (Html)
 import FS exposing (readFile, ReadError)
 import Task exposing (andThen, succeed, Task)
+import VDOMtoHTML exposing (toHTML)
 
 type alias Path = String
 type alias ModuleName = List String
 
-embed : (ModuleName, Path) -> String -> Task ReadError String
+embed : (ModuleName, Path) -> Html -> Task ReadError String
 embed (modulename, path) html = let
+  joinOn = flip join modulename
   g js = """
 
     <!DOCTYPE HTML>
     <html>
       <head>
         <meta charset="UTF-8">
-        <title>Line</title>
-        <style>
-          html, head, body { padding:0; margin:0; }
-          body { font-family: calibri, helvetica, arial, sans-serif; }
-          a:link { text-decoration: none; color: rgb(15,102,230); }
-          a:visited { text-decoration: none; }
-          a:active { text-decoration: none; }
-          a:hover { text-decoration: underline; color: rgb(234,21,122); }
-          html,body { height: 100%; margin: 0px; }
-        </style>
-
+        <title>""" ++ joinOn " " ++ """</title>
       </head>
       <body>
-        <div id="elm">
-          """ ++ html ++ """
-        </div>
+        """ ++ toHTML html ++ """
         <script>
           """ ++ js ++ """
           var runningElmModule =
-            Elm.embed(Elm.""" ++ join "." modulename ++ """,
-            document.getElementById("elm"));
+            Elm.embed(Elm.""" ++ joinOn "." ++ """,
+            document.body);
         </script>
       </body>
     </html>"""
