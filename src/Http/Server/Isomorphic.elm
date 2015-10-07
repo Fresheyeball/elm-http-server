@@ -26,13 +26,11 @@ embed (modulename, path) html = let
         </div>
         <script>
           """ ++ js ++ """
-          var runningElmModule =
-            Elm.embed(Elm.""" ++ joinOn "." ++ """,
-            document.getElementById("elm"));
+          Elm.embed
+            ( Elm.""" ++ joinOn "." ++ """
+            , document.getElementById("elm") );
         </script>
       </body>
     </html>"""
 
-  in
-
-    readFile path `andThen` (g >> succeed)
+  in readFile path `andThen` (g >> succeed)

@@ -6,4 +6,4 @@ main : Html
 main = div []
   [ h1 []
       [ text "Wowzers in my Trousers" ]
-  , input [] []]
+  , input [] [] ]
