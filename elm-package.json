@@ -5,7 +5,7 @@
     "license": "MIT",
     "source-directories": [
         "src",
-        "example"
+        "example/isomorphic-templating"
     ],
     "exposed-modules": [
         "Http.Server"
