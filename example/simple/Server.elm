@@ -2,7 +2,7 @@ module Server where
 
 import Http.Server.Simple exposing (..)
 import Html exposing (h1,text)
--- import Effects exposing (Never)
+import Effects exposing (Never)
 import Task exposing (Task)
 import Signal exposing (..)
 
@@ -16,3 +16,6 @@ route req _ = case .url req of
 server : Server
 server sigreq =
   Task.succeed <~ (route <~ sigreq ~ constant EmptyRes)
+
+port serve : Signal (Task Never ())
+port serve = run 8080 server

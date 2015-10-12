@@ -14,7 +14,7 @@ type Response
   = Html Html.Html
   | Json Json.Value
   | Text String
-  | EmptyRes 
+  | EmptyRes
 
 type alias Request =
   { url        : Raw.Url
@@ -51,7 +51,7 @@ run p s = let
   create : Signal (Task Never ())
   create = constant <|
     Raw.createServer'
-      server.address p ("Listening on" ++ toString p)
+      server.address p ("Listening on " ++ toString p)
     `andThen` always (Task.succeed ())
 
   in merge create reply
