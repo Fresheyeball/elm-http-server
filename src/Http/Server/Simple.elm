@@ -14,6 +14,7 @@ type Response
   = Html Html.Html
   | Json Json.Value
   | Text String
+  | EmptyRes 
 
 type alias Request =
   { url        : Raw.Url
