@@ -2,13 +2,13 @@ module Http.Server
   ( createServer, listen
   , createServer'
   , writeHead, write, end
-  , writeHtml, writeJson
+  , writeHtml, writeJson, writeText
   , Port, Code, Echo, Header, Url
   , Server, Method(..)
   , emptyReq, Request
   , emptyRes, Response
   , url, method, statusCode
-  , textHtml, applicationJson
+  , textHtml, applicationJson, plainText
   , onRequest
   , onClose, onCloseReq
   , onCloseRes, onFinishRes) where
@@ -33,10 +33,10 @@ module Http.Server
 @docs Response, emptyRes
 
 ## High level api
-@docs writeHtml, writeJson
+@docs writeHtml, writeJson, writeText
 
 ## Lower level api
-@docs writeHead, write, end, textHtml, applicationJson
+@docs writeHead, write, end, textHtml, applicationJson, plainText
 
 # Listen for events
 @docs onRequest, onClose, onCloseReq, onCloseRes, onFinishRes
@@ -218,3 +218,18 @@ applicationJson = ("Content-Tyoe", "application/json")
 -}
 writeJson : Response -> Json.Value -> Task x ()
 writeJson res = writeAs applicationJson res << Json.encode 0
+
+{-| Text Header {"Content-Type":"plain/text"}-}
+plainText : Header
+plainText = ("Content-Tyoe", "plain/text")
+
+{-| Write out Text to a Response. For example
+
+    res `writeText` """
+      Hello, kind vistor.
+      How goes it?
+    """
+
+-}
+writeText : Response -> String -> Task x ()
+writeText = writeAs plainText
