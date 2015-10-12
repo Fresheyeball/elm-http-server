@@ -5,7 +5,9 @@ import Html
 import Json.Encode as Json
 import Effects exposing (Effects, Never)
 import Task exposing (Task, andThen)
-import VDOMtoHtml exposing (toHTML)
+import VDOMtoHTML exposing (toHTML)
+import Signal exposing (..)
+import Debug
 
 type alias Head = List Raw.Header
 
@@ -27,35 +29,39 @@ marshallRequest req =
     (Raw.statusCode req)
 
 runResponse : Raw.Response -> Response -> Task Never ()
-runResponse res res' =
-  case .body res' of
-    Html vdom -> Raw.writeHtml res (toHTML vdom)
-    Json json -> Raw.writeJson res json
-    Text text -> Raw.writeText res text
+runResponse rawres res =
+  case res of
+    Html vdom -> Raw.writeHtml rawres (toHTML vdom)
+    Json json -> Raw.writeJson rawres json
+    Text text -> Raw.writeText rawres text
 
-type alias Server = Signal (Request -> Effects Response)
+type alias Server = Signal Request -> Signal (Effects Response)
 type alias Port = Raw.Port
 
-run : Port -> Server -> Signal (Task Never ())
+-- run : Port -> Server -> Signal (Task Never ())
 run p s = let
+
+  (>>=) = andThen
 
   server : Mailbox (Raw.Request, Raw.Response)
   server = mailbox (Raw.emptyReq, Raw.emptyRes)
 
   reply : Signal (Task Never ())
   reply = let
-    go step (req, res) = Effects.toTask
-      (step (marshallRequest req))
-      `andThen` runResponse res
-    in go <~ server.signal ~ s
+    reqs = fst <~ server.signal
+    ress = snd <~ server.signal
+    go : Effects Response -> Raw.Response -> Task Never ()
+    go effres rawres =
+      Effects.toTask (Debug.crash "sendy") effres >>= runResponse rawres
+    in go <~ s (marshallRequest <~ reqs) ~ ress
 
   create : Signal (Task Never ())
   create = constant <|
     Raw.createServer'
       server.address p ("Listening on" ++ toString p)
-    `andThen` always (Task.succeed ())
+    >>= always (Task.succeed ())
 
-  in merge create reply.signal
+  in merge create reply
 
 
 
