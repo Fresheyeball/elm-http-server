@@ -28,13 +28,14 @@ marshallRequest req =
     (Raw.method req)
     (Raw.statusCode req)
 
-runResponse : Raw.Response -> Response -> Task Never ()
-runResponse rawres res = case res of
+runResponse : Response -> Raw.Response -> Task Never ()
+runResponse res rawres = case res of
   Html vdom -> Raw.writeHtml rawres (toHTML vdom)
   Json json -> Raw.writeJson rawres json
   Text text -> Raw.writeText rawres text
+  EmptyRes -> Task.succeed ()
 
-type alias Server model = Signal Request -> Signal (Task Never (model, Response))
+type alias Server model = Signal Request -> Signal (model, Response)
 type alias Port = Raw.Port
 
 run : Port -> Server model -> Signal (Task Never ())
@@ -44,9 +45,7 @@ run p s = let
   server = mailbox (Raw.emptyReq, Raw.emptyRes)
 
   reply : Signal (Task Never ())
-  reply =
-    (\task rawres ->
-      Task.map snd task `andThen` runResponse rawres)
+  reply = (runResponse << snd)
     <~ s (marshallRequest <~ (fst <~ server.signal))
      ~ (snd <~ server.signal)
 
