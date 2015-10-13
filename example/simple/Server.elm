@@ -14,10 +14,11 @@ view count = let
   in h1 [] [ text <| "Wowzers, server hit " ++ times ]
 
 route : Request -> (RequestCount, Response) -> (RequestCount, Response)
-route {url} (count, _) = let count' = count + 1 in case url of
-    "/"      -> (count', Html (view count'))
-    "/reset" -> (0,      Text "Count Reset")
-    _        -> (count,  Text "404")
+route {url} (count, _) =
+  let count' = count + 1 in case url of
+  "/"      -> (count', Html (view count'))
+  "/reset" -> (0,      Text "Count Reset")
+  _        -> (count,  Text "404")
 
 server : Server RequestCount
 server sigreq = foldp route (0, EmptyRes) sigreq
