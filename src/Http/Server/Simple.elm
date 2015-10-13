@@ -33,7 +33,7 @@ runResponse res rawres = case res of
   Html vdom -> Raw.writeHtml rawres (toHTML vdom)
   Json json -> Raw.writeJson rawres json
   Text text -> Raw.writeText rawres text
-  EmptyRes -> Task.succeed ()
+  EmptyRes  -> Task.succeed ()
 
 type alias Server model = Signal Request -> Signal (model, Response)
 type alias Port = Raw.Port
