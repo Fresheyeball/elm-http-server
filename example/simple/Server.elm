@@ -6,9 +6,9 @@ import Effects exposing (Never)
 import Task exposing (Task)
 import Signal exposing (..)
 
-type alias State = List Int
+type alias RequestCount = Int
 
-route : Request -> Response -> Response
+route : Request -> (RequestCount, Response) -> (RequestCount, Response)
 route req _ = case .url req of
   "/" -> Html <| h1 [] [ text "Wowzers" ]
   _   -> Text "404"

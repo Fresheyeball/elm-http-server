@@ -34,17 +34,19 @@ runResponse rawres res = case res of
   Json json -> Raw.writeJson rawres json
   Text text -> Raw.writeText rawres text
 
-type alias Server = Signal Request -> Signal (Task Never Response)
+type alias Server model = Signal Request -> Signal (Task Never (model, Response))
 type alias Port = Raw.Port
 
-run : Port -> Server -> Signal (Task Never ())
+run : Port -> Server model -> Signal (Task Never ())
 run p s = let
 
   server : Mailbox (Raw.Request, Raw.Response)
   server = mailbox (Raw.emptyReq, Raw.emptyRes)
 
   reply : Signal (Task Never ())
-  reply = (\taskres rawres -> taskres `andThen` runResponse rawres)
+  reply =
+    (\task rawres ->
+      Task.map snd task `andThen` runResponse rawres)
     <~ s (marshallRequest <~ (fst <~ server.signal))
      ~ (snd <~ server.signal)
 
