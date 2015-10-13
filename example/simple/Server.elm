@@ -8,8 +8,8 @@ import Signal exposing (..)
 
 type alias State = List Int
 
-route : Request -> Response -> Response
-route req _ = case .url req of
+-- route : Request -> (State, Response) -> (State, Response)
+route {url} _ = case url of
   "/" -> Html <| h1 [] [ text "Wowzers" ]
   _   -> Text "404"
 
